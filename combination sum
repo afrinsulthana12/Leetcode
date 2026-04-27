@@ -1,0 +1,32 @@
+import java.util.*;
+
+class Solution {
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        List<List<Integer>> results = new ArrayList<>();
+        // Sorting helps to prune the search tree early
+        Arrays.sort(candidates);
+        backtrack(candidates, target, 0, new ArrayList<>(), results);
+        return results;
+    }
+
+    private void backtrack(int[] candidates, int remain, int start, 
+                           List<Integer> current, List<List<Integer>> results) {
+        if (remain == 0) {
+            // Found a valid combination
+            results.add(new ArrayList<>(current));
+            return;
+        }
+
+        for (int i = start; i < candidates.length; i++) {
+            // Optimization: if the number is greater than the remaining sum,
+            // no need to check further because candidates are sorted.
+            if (candidates[i] > remain) break;
+
+            current.add(candidates[i]);
+            // Use 'i' instead of 'i + 1' to allow reusing the same element
+            backtrack(candidates, remain - candidates[i], i, current, results);
+            // Backtrack: remove the last element before the next iteration
+            current.remove(current.size() - 1);
+        }
+    }
+}
