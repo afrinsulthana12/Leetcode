@@ -1,0 +1,39 @@
+import java.util.*;
+
+class Solution {
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        // 1. Sort the array so duplicates are adjacent
+        Arrays.sort(nums); 
+        backtrack(result, new ArrayList<>(), nums, new boolean[nums.length]);
+        return result;
+    }
+
+    private void backtrack(List<List<Integer>> result, List<Integer> tempList, int[] nums, boolean[] used) {
+        // Base case: if current list size matches original array length, we found a permutation
+        if (tempList.size() == nums.length) {
+            result.add(new ArrayList<>(tempList));
+            return;
+        }
+
+        for (int i = 0; i < nums.length; i++) {
+            // Skip if the element is already used in the current path
+            if (used[i]) continue;
+            
+            // OPTIMIZATION: Skip duplicates. 
+            // If the current number is the same as the previous one AND
+            // the previous one hasn't been used yet in this level of recursion, 
+            // it means choosing the current one would create a duplicate permutation.
+            if (i > 0 && nums[i] == nums[i - 1] && !used[i - 1]) continue;
+
+            used[i] = true;
+            tempList.add(nums[i]);
+            
+            backtrack(result, tempList, nums, used);
+            
+            // Backtrack: undo the choices for the next iteration
+            used[i] = false;
+            tempList.remove(tempList.size() - 1);
+        }
+    }
+}
