@@ -1,0 +1,31 @@
+import java.util.Stack;
+
+class Solution {
+    public int longestValidParentheses(String s) {
+        // Use a stack to store indices of unmatched parentheses
+        Stack<Integer> stack = new Stack<>();
+        // Push -1 as a base index for calculating length from the start
+        stack.push(-1);
+        int maxLen = 0;
+
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == '(') {
+                // Store the index of '(' to match later
+                stack.push(i);
+            } else {
+                // If ')', pop the corresponding '(' index
+                stack.pop();
+                
+                if (stack.isEmpty()) {
+                    // If empty, this ')' was unmatched. 
+                    // It becomes the new "base" for the next potential valid substring.
+                    stack.push(i);
+                } else {
+                    // Current valid length is current index minus top of stack
+                    maxLen = Math.max(maxLen, i - stack.peek());
+                }
+            }
+        }
+        return maxLen;
+    }
+}
